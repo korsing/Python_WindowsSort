@@ -14,9 +14,8 @@ def convert_original():
     sheet_Total = excel_Total["Sheet1"]
 
     # 전체 리스트를 참조하여 분반 내용 딕셔너리로 만들기
-
-
     for rownum in range(1,200):
+        # 엑셀파일 열기
         student_id = sheet_Total.cell(row = rownum, column = 5).value
         division = sheet_Total.cell(row = rownum, column = 2).value
 
@@ -35,11 +34,14 @@ def convert_original():
             division_50313.append(student_id)
         else:
             print("{}의 분류 정보가 없습니다. 학번을 확인해주세요. ".format(student_id))
-        student_list = division_32423 + division_32530 + division_32531 + division_50313
+
+    # 전체 학생 리스트를 생성.. 이는 나중에 미제출자 확인하기 위해서 만들어 두는 것
+    student_list = division_32423 + division_32530 + division_32531 + division_50313
 
     return distribute(student_list)
     
 def distribute(student_list):
+    # 아이캠퍼스에서 다운로드한 파일이 위치한 주소로 이동
     os.chdir("C:\\Users\\Joshua Y. S. Jung\\Desktop\\icampus\\Original")
     # 각각 분류할 폴더를 생성
     os.mkdir("C:\\Users\\Joshua Y. S. Jung\\Desktop\\icampus\\32423")
@@ -48,10 +50,12 @@ def distribute(student_list):
     os.mkdir("C:\\Users\\Joshua Y. S. Jung\\Desktop\\icampus\\50313")
     
     # 총 제출 인원 및 분반별 제출 인원을 확인하기 위한 변수 선언
-    count = [0,0,0,0,0,0]
-    
+    count = [0,0,0,0,0,0] # 0은 총 제출 수, 1~4는 분반 기호, 5는 중복 제출자 수
+                          # 따라서, 0에서 5를 빼면 총 제출 인원이 나옴
+                    
     # Original 폴더에 있는 전체 목록을 하나씩 traversing 하면서 분류 시작
     total_list = os.listdir()
+    # 분류가 완료된 리스트
     done = []
     for file in total_list:
         # 일단 그 파일이 무엇인지 출력
@@ -68,7 +72,6 @@ def distribute(student_list):
             count[3] += 1
         elif(int(file[:10]) in division_50313):
             shutil.copy(file, "C:\\Users\\Joshua Y. S. Jung\\Desktop\\icampus\\50313")
-            
             count[4] += 1
         else:
             print("{}의 분류 정보가 없습니다. 학번을 확인해주세요. ".format(file[:10]))
